@@ -1,6 +1,5 @@
 package com.lingyejun.tick.authenticator;
 
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
