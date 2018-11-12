@@ -18,9 +18,7 @@ public class HmacBasic {
 
     public static final String BYTE_ENCODE = "UTF-8";
 
-    public static byte[] generateHashValue
-
-    public static void main(String[] args) {
+    public static byte[] getHmacSha1Value(String key,String message){
         try {
             SecretKey secretKey = new SecretKeySpec(key.getBytes(BYTE_ENCODE), HMAC_TYPE);
             Mac mac = Mac.getInstance(HMAC_TYPE);
@@ -29,6 +27,7 @@ public class HmacBasic {
             System.out.println(new String(bytes));
             byte[] hexBytes = new Hex().encode(bytes);
             System.out.println(new String(hexBytes));
+            return bytes;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeyException e) {
@@ -36,6 +35,10 @@ public class HmacBasic {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+        return null;
+    }
 
+    public static void main(String[] args) {
+        HmacBasic.getHmacSha1Value(key, message);
     }
 }
