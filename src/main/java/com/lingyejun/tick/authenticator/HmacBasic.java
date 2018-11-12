@@ -18,6 +18,7 @@ public class HmacBasic {
 
     public static final String BYTE_ENCODE = "UTF-8";
 
+    public static byte[] generateHashValue
 
     public static void main(String[] args) {
         try {
