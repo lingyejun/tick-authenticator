@@ -1,5 +1,11 @@
 package com.lingyejun.tick.authenticator;
 
+/**
+ * @Author: Lingye
+ * @Date: 2018/11/15
+ * @Describe: 
+ * @Modified By:
+ */
 public class HOTPImpl {
 
     /**
