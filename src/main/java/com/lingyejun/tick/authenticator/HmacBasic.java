@@ -8,6 +8,12 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import org.apache.commons.codec.binary.Hex;
 
+/**
+ * @Author: Lingye
+ * @Date: 2018/11/16
+ * @Describe: 
+ * @Modified By:
+ */
 public class HmacBasic {
 
     public static String key = "8844990";
