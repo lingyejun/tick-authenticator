@@ -28,7 +28,7 @@ public class TickAuthenticator implements ITickAuthenticator{
         config = new TickAuthenticatorConfig();
     }
 
-    private int generateAuthCode(byte[] key, long value){
+    public int generateAuthCode(byte[] key, long value){
 
         // 为64位long类型创建byte[]
         byte[] data = new byte[8];
