@@ -9,6 +9,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * TickAuthenticator
+ * 
  * @Author: lingyejun
  * @Date: 2019/2/24
  * @Describe: 
