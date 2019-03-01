@@ -7,7 +7,7 @@ import java.math.BigInteger;
  *
  * @Author: lingyejun
  * @Date: 2019/2/26
- * @Describe: 
+ * @Describe:
  * @Modified By:
  */
 public class CommonUtil {
@@ -20,9 +20,9 @@ public class CommonUtil {
      */
     public static String bytesToHexString(byte[] bytes) {
         StringBuffer buffer = new StringBuffer();
-        for(int i = 0; i < bytes.length; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             String hex = Integer.toHexString(bytes[i] & 0xFF);
-            if(hex.length() < 2){
+            if (hex.length() < 2) {
                 buffer.append(0);
             }
             buffer.append(hex);
@@ -36,16 +36,16 @@ public class CommonUtil {
      * @param hex
      * @return
      */
-    public static byte[] hexStr2Bytes(String hex){
+    public static byte[] hexStr2Bytes(String hex) {
 
         // Adding one byte to get the right conversion
         // values starting with "0" can be converted
-        byte[] bArray = new BigInteger("10" + hex,16).toByteArray();
+        byte[] bArray = new BigInteger("10" + hex, 16).toByteArray();
 
         // Copy all the REAL bytes, not the "first"
         byte[] ret = new byte[bArray.length - 1];
-        for (int i = 0; i < ret.length ; i++)
-            ret[i] = bArray[i+1];
+        for (int i = 0; i < ret.length; i++)
+            ret[i] = bArray[i + 1];
         return ret;
     }
 
@@ -55,7 +55,7 @@ public class CommonUtil {
         System.out.println(hex);
         byte[] newByte = hexStr2Bytes(hex);
         for (int i = 0; i < newByte.length; i++) {
-            System.out.print(newByte[i]+" ");
+            System.out.print(newByte[i] + " ");
         }
     }
 
