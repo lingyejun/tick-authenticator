@@ -18,15 +18,37 @@ public class TickAuthenticatorConfig {
         return digit;
     }
 
-    public void setDigit(int digit) {
-        this.digit = digit;
-    }
-
     public int getModDigit() {
         return modDigit;
     }
 
-    public void setModDigit(int modDigit) {
-        this.modDigit = modDigit;
+
+    public static class AuthenticatorConfigBuilder {
+
+        private TickAuthenticatorConfig config = new TickAuthenticatorConfig();
+
+        public TickAuthenticatorConfig build() {
+            return config;
+        }
+
+        public AuthenticatorConfigBuilder setDigit(int digit) {
+
+            if (digit <= 0) {
+
+                throw new IllegalArgumentException("number of digit not be negative.");
+            }
+
+            if (digit < 6) {
+                throw new IllegalArgumentException("minimum number of digit is 6.");
+            }
+
+            if (digit > 8) {
+                throw new IllegalArgumentException("maximum digit number of is 8.");
+            }
+
+            config.digit = digit;
+            config.modDigit = (int) Math.pow(10, digit);
+            return this;
+        }
     }
 }
