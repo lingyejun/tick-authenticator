@@ -1,6 +1,8 @@
 package com.lingyejun.authenticator.tick;
 
 /**
+ * 参数配置
+ *
  * @Author: lingyejun
  * @Date: 2019/2/22
  * @Describe: 
