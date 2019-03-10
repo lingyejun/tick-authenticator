@@ -1,4 +1,4 @@
-package com.lingyejun.authenticator.tick;
+package com.lingyejun.authenticator;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;

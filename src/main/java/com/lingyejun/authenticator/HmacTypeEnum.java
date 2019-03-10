@@ -1,4 +1,4 @@
-package com.lingyejun.authenticator.tick;
+package com.lingyejun.authenticator;
 
 /**
  * @Author: lingyejun

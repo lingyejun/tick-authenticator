@@ -1,4 +1,4 @@
-package com.lingyejun.authenticator.tick;
+package com.lingyejun.authenticator;
 
 /**
  * 秘钥Key配置

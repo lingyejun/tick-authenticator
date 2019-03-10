@@ -1,4 +1,6 @@
-package com.lingyejun.authenticator.tick;
+package com.lingyejun.authenticator;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * 参数配置
@@ -15,6 +17,12 @@ public class TickAuthenticatorConfig {
 
     // 用于取模计算的基数
     private int modDigit = (int) Math.pow(10, digit);
+
+    // OTP的步长
+    private long timeStepMills = TimeUnit.SECONDS.toMillis(30);
+
+    // Hmac的类型
+    private String hmacType = HmacTypeEnum.HmacSHA1.getHmacType();
 
     public int getDigit() {
         return digit;
@@ -50,6 +58,16 @@ public class TickAuthenticatorConfig {
 
             config.digit = digit;
             config.modDigit = (int) Math.pow(10, digit);
+            return this;
+        }
+
+        public AuthenticatorConfigBuilder setTimeStepMills(long timeStepMills) {
+
+            if (timeStepMills <= 0) {
+                throw new IllegalArgumentException("time step not be negative.");
+            }
+
+            config.timeStepMills = timeStepMills;
             return this;
         }
     }
