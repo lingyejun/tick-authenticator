@@ -22,7 +22,7 @@ public class TickAuthenticatorConfig {
     private long timeStepMills = TimeUnit.SECONDS.toMillis(30);
 
     // Hmac的类型
-    private String hmacType = HmacTypeEnum.HmacSHA1.getHmacType();
+    private String hmacType = HmacHashFunction.HmacSHA1.getHmacType();
 
     public int getDigit() {
         return digit;
@@ -32,6 +32,13 @@ public class TickAuthenticatorConfig {
         return modDigit;
     }
 
+    public long getTimeStepMills() {
+        return timeStepMills;
+    }
+
+    public String getHmacType() {
+        return hmacType;
+    }
 
     public static class AuthenticatorConfigBuilder {
 
@@ -68,6 +75,16 @@ public class TickAuthenticatorConfig {
             }
 
             config.timeStepMills = timeStepMills;
+            return this;
+        }
+
+        public AuthenticatorConfigBuilder setHmacType(String hmacType) {
+
+            if (!HmacHashFunction.isLegalType(hmacType)){
+                throw new IllegalArgumentException("not support that hash function type.");
+            }
+
+            config.hmacType = hmacType;
             return this;
         }
     }

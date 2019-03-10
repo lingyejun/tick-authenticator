@@ -30,18 +30,29 @@ public class TickAuthenticator implements ITickAuthenticator{
         config = new TickAuthenticatorConfig();
     }
 
-    public int generateAuthCode(byte[] key, long value){
+    public TickAuthenticator(TickAuthenticatorConfig config) {
+        this.config = config;
+    }
+
+    public int generateAuthCode(byte[] key, long tm){
 
         // 为64位long类型创建byte[]
         byte[] data = new byte[8];
-        // 转为8字节64位的字节数组
+
+        long value = tm;
+
+        // 将long转为8字节64位的字节数组
+        for (int i = 8; i-- > 0; value >>>= 8) {
+            // 记录低八位后右移
+            data[i] = (byte) value;
+        }
 
         // 初始化秘钥
-        SecretKey secretKey = new SecretKeySpec(key, HmacTypeEnum.HmacSHA1.getHmacType());
+        SecretKey secretKey = new SecretKeySpec(key, config.getHmacType());
 
         try {
             // 获取Hmac实例并指定其摘要算法
-            Mac mac = Mac.getInstance(HmacTypeEnum.HmacSHA1.getHmacType());
+            Mac mac = Mac.getInstance(config.getHmacType());
             mac.init(secretKey);
 
             // 计算HMac结果
@@ -50,16 +61,12 @@ public class TickAuthenticator implements ITickAuthenticator{
             // 取数组末端低四位并计算偏移量offset
             int offset = hmacResult[hmacResult.length - 1] & 0xF;
 
-            long truncation = 0;
-
             // 从偏移位置开始取4个字节作为OTP基础数据
-            for (int i = 0; i < 4; i++) {
-                // 将上一个字节数据左移
-                truncation <<= 8;
+            long truncation = (hmacResult[offset]  & 0x7f) << 24
+                    | (hmacResult[offset+1] & 0xff) << 16
+                    | (hmacResult[offset+2] & 0xff) <<  8
+                    | (hmacResult[offset+3] & 0xff) ;
 
-                // 与此字节进行拼接
-                truncation |= hmacResult[offset + i] & 0xFF;
-            }
             // 截取低32位的数据
             truncation &= MAX_HEX_INTEGER;
 
