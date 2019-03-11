@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import static org.junit.Assert.assertEquals;
 
 /**
- * Test
+ * 测试类
  *
  * @Author: lingyejun
  * @Date: 2019/2/19
