@@ -2,6 +2,7 @@
 Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
 # Notations
+
 * HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))
 
 * Basically, we define TOTP as TOTP = HOTP(K, T), where T is an integer
