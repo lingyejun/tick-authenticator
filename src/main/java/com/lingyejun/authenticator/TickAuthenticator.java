@@ -9,7 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * TickAuthenticator
+ * TOTP实现类
  *
  * @Author: lingyejun
  * @Date: 2019/2/24
