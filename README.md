@@ -1,6 +1,8 @@
 # tick-authenticator
 Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
+# Definition of HMAC
+
 # Notations
 
 * HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))
