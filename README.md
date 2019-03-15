@@ -2,6 +2,13 @@
 Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
 # Definition of HMAC
+We define two fixed and different strings ipad and opad as follows (the 'i' and 'o' are mnemonics for inner and outer):
+ipad = the byte 0x36 repeated B times
+opad = the byte 0x5C repeated B times.
+
+To compute HMAC over the data ‘text' we perform
+
+H(K XOR opad, H(K XOR ipad, text))
 
 # Notations
 
