@@ -7,4 +7,13 @@ package com.lingyejun.authenticator;
  * @Modified By:
  */
 public interface ITickAuthenticator {
+
+    /**
+     * 生成客户端凭证
+     *
+     *
+     *
+     * @return
+     */
+    TickAuthenticatorKey createCredentials();
 }

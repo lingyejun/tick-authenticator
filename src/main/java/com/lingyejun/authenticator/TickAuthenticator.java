@@ -74,7 +74,6 @@ public class TickAuthenticator implements ITickAuthenticator{
             truncation %= config.getModDigit();
 
             return (int)truncation;
-
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
 
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -82,5 +81,16 @@ public class TickAuthenticator implements ITickAuthenticator{
             throw new TickAuthenticatorException("generated auth code throws exception");
         }
 
+    }
+
+    /**
+     * 生成客户端凭证
+     *
+     * @return
+     */
+    @Override
+    public TickAuthenticatorKey createCredentials() {
+
+        return null;
     }
 }

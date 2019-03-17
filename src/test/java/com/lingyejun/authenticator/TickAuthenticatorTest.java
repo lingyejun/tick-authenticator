@@ -4,6 +4,11 @@ package com.lingyejun.authenticator;
 import org.junit.Test;
 import com.lingyejun.authenticator.TickAuthenticatorConfig.AuthenticatorConfigBuilder;
 
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +30,43 @@ public class TickAuthenticatorTest {
     private long t0 = 0;
 
     private long x = 30;
+
+    private static String hash(String content){
+        StringBuffer hexString = new StringBuffer();
+        try {
+            MessageDigest md = MessageDigest.getInstance("HmacSHA1");
+            md.update(content.getBytes());
+            byte[] hash = md.digest();
+            for (int i = 0; i < hash.length; i++) {
+                if ((0xff & hash[i]) < 0x10) {
+                    hexString.append("0" + Integer.toHexString((0xFF & hash[i])));
+                } else {
+                    hexString.append(Integer.toHexString(0xFF & hash[i]));
+                }
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return hexString.toString();
+    }
+
+    @Test
+    public void getDigest(){
+        byte[] hmacResult = null;
+        try {
+            // 获取Hmac实例并指定其摘要算法
+            Mac mac = Mac.getInstance("HmacSHA1");
+            SecretKeySpec macKey = new SecretKeySpec("lingyejun".getBytes(), "HmacSHA1");
+            mac.init(macKey);
+
+            // 计算HMac结果
+            hmacResult = mac.doFinal("123".getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Test
     public void sampleTest() {

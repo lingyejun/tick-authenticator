@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @Author: lingyejun
  * @Date: 2019/2/22
- * @Describe: 
+ * @Describe:
  * @Modified By:
  */
 public class TickAuthenticatorConfig {
@@ -24,6 +24,9 @@ public class TickAuthenticatorConfig {
     // Hmac的类型
     private String hmacType = HmacHashFunction.HmacSHA1.getHmacType();
 
+    // 秘钥的编码方式
+    private String secretKeyEncoding = SecretKeyEncoding.Base32.toString();
+
     public int getDigit() {
         return digit;
     }
@@ -34,6 +37,10 @@ public class TickAuthenticatorConfig {
 
     public long getTimeStepMills() {
         return timeStepMills;
+    }
+
+    public String getSecretKeyEncoding() {
+        return secretKeyEncoding;
     }
 
     public String getHmacType() {
@@ -80,11 +87,20 @@ public class TickAuthenticatorConfig {
 
         public AuthenticatorConfigBuilder setHmacType(String hmacType) {
 
-            if (!HmacHashFunction.isLegalType(hmacType)){
+            if (!HmacHashFunction.isLegalType(hmacType)) {
                 throw new IllegalArgumentException("not support that hash function type.");
             }
 
             config.hmacType = hmacType;
+            return this;
+        }
+
+        public AuthenticatorConfigBuilder setSecretKeyEncoding(String secretKeyEncoding) {
+
+            if (!SecretKeyEncoding.isLegal(secretKeyEncoding)) {
+                throw new IllegalArgumentException("not support encoding type.");
+            }
+            config.secretKeyEncoding = secretKeyEncoding;
             return this;
         }
     }
