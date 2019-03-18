@@ -23,6 +23,9 @@ public class TickAuthenticator implements ITickAuthenticator{
     // 32位int用十六进制表示的最大值
     private static final int MAX_HEX_INTEGER = 0x7FFFFFFF;
 
+    // 秘钥的二进制长度
+    private static final int SECRET_BITS_LENGTH = 80;
+
     // 配置项类
     private final TickAuthenticatorConfig config;
 
@@ -90,6 +93,9 @@ public class TickAuthenticator implements ITickAuthenticator{
      */
     @Override
     public TickAuthenticatorKey createCredentials() {
+        // 分配秘钥空间
+        byte[] bytes = new byte[SECRET_BITS_LENGTH];
+        //
 
         return null;
     }
