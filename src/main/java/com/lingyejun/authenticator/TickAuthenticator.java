@@ -20,6 +20,17 @@ public class TickAuthenticator implements ITickAuthenticator{
 
     private static final Logger LOGGER = Logger.getLogger(TickAuthenticator.class.getName());
 
+    // 密钥随机算法
+    @SuppressWarnings("SpellCheckingInspection")
+    private static final String RNG_ALGORITHM = "SHA1PRNG";
+
+    // 密钥随机算法的提供方
+    @SuppressWarnings("SpellCheckingInspection")
+    private static final String RNG_ALGORITHM_PROVIDER = "SUN";
+
+    // 初始化密钥随机
+    private final TickSecureRandom tickSecureRandom = new TickSecureRandom(RNG_ALGORITHM, RNG_ALGORITHM_PROVIDER);
+
     // 32位int用十六进制表示的最大值
     private static final int MAX_HEX_INTEGER = 0x7FFFFFFF;
 
@@ -95,8 +106,9 @@ public class TickAuthenticator implements ITickAuthenticator{
     public TickAuthenticatorKey createCredentials() {
         // 分配秘钥空间
         byte[] bytes = new byte[SECRET_BITS_LENGTH];
-        //
-
+        // 填充密钥
+        tickSecureRandom.filledRandomBytes(bytes);
+        // 
         return null;
     }
 }
