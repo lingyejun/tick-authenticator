@@ -1,5 +1,7 @@
 package com.lingyejun.authenticator;
 
+import com.sun.xml.internal.rngom.parse.host.Base;
+
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -7,6 +9,9 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.apache.commons.codec.binary.Base32;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * TOTP实现类
@@ -104,11 +109,30 @@ public class TickAuthenticator implements ITickAuthenticator{
      */
     @Override
     public TickAuthenticatorKey createCredentials() {
-        // 分配秘钥空间
+        // 分配随机数空间
         byte[] bytes = new byte[SECRET_BITS_LENGTH];
-        // 填充密钥
+        // 填充随机数
         tickSecureRandom.filledRandomBytes(bytes);
-        // 
+        // 生成用户可见的密钥
+        String userViewkey =
+
         return null;
+    }
+
+    /**
+     * 将密钥转换为可见的形式
+     *
+     * @param randomBytes
+     * @return
+     */
+    private String converterSecretKey(byte[] randomBytes) {
+        switch (config.getSecretKeyEncoding()){
+            case "Base32":
+                return new Base32().encodeToString(randomBytes);
+            case "Base64":
+                return new Base64().encodeToString(randomBytes);
+            default:
+                throw new IllegalArgumentException("not support converter encoding type");
+        }
     }
 }
