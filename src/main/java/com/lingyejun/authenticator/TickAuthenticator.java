@@ -18,10 +18,10 @@ import org.apache.commons.codec.binary.Base64;
  *
  * @Author: lingyejun
  * @Date: 2019/2/24
- * @Describe: 
+ * @Describe:
  * @Modified By:
  */
-public class TickAuthenticator implements ITickAuthenticator{
+public class TickAuthenticator implements ITickAuthenticator {
 
     private static final Logger LOGGER = Logger.getLogger(TickAuthenticator.class.getName());
 
@@ -53,7 +53,7 @@ public class TickAuthenticator implements ITickAuthenticator{
         this.config = config;
     }
 
-    public int generateAuthCode(byte[] key, long tm){
+    public int generateAuthCode(byte[] key, long tm) {
 
         // 为64位long类型创建byte[]
         byte[] data = new byte[8];
@@ -81,10 +81,10 @@ public class TickAuthenticator implements ITickAuthenticator{
             int offset = hmacResult[hmacResult.length - 1] & 0xF;
 
             // 从偏移位置开始取4个字节作为OTP基础数据
-            long truncation = (hmacResult[offset]  & 0x7f) << 24
-                    | (hmacResult[offset+1] & 0xff) << 16
-                    | (hmacResult[offset+2] & 0xff) <<  8
-                    | (hmacResult[offset+3] & 0xff) ;
+            long truncation = (hmacResult[offset] & 0x7f) << 24
+                    | (hmacResult[offset + 1] & 0xff) << 16
+                    | (hmacResult[offset + 2] & 0xff) << 8
+                    | (hmacResult[offset + 3] & 0xff);
 
             // 截取低32位的数据
             truncation &= MAX_HEX_INTEGER;
@@ -92,7 +92,7 @@ public class TickAuthenticator implements ITickAuthenticator{
             // 截取要返回长度的数据
             truncation %= config.getModDigit();
 
-            return (int)truncation;
+            return (int) truncation;
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
 
             LOGGER.log(Level.SEVERE, e.getMessage(), e);
@@ -114,9 +114,24 @@ public class TickAuthenticator implements ITickAuthenticator{
         // 填充随机数
         tickSecureRandom.filledRandomBytes(bytes);
         // 生成用户可见的密钥
-        String userViewkey =
+        String userViewKey = converterSecretKey(bytes);
+        // 生成用于验证的码
+        int validationCode = generateValidateCode(bytes);
+        // 生成碰撞测试用的码
+
 
         return null;
+    }
+
+    /**
+     * 生成验证码
+     *
+     * @param secretBytes
+     * @return
+     */
+    private int generateValidateCode(byte[] secretBytes) {
+        // 基于0时刻
+        return generateAuthCode(secretBytes, 0);
     }
 
     /**
@@ -126,7 +141,7 @@ public class TickAuthenticator implements ITickAuthenticator{
      * @return
      */
     private String converterSecretKey(byte[] randomBytes) {
-        switch (config.getSecretKeyEncoding()){
+        switch (config.getSecretKeyEncoding()) {
             case "Base32":
                 return new Base32().encodeToString(randomBytes);
             case "Base64":
