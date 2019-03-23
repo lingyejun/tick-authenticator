@@ -7,6 +7,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,6 +34,18 @@ public class TickAuthenticator implements ITickAuthenticator {
     // 密钥随机算法的提供方
     @SuppressWarnings("SpellCheckingInspection")
     private static final String RNG_ALGORITHM_PROVIDER = "SUN";
+
+    // 无效的碰撞码
+    private static final int SCRATCH_CODE_INVALID = -1;
+
+    // 用于计算碰撞码的随机字节长度
+    private static final int BYTES_PER_SCRATCH_CODE = 4;
+
+    // 碰撞码长度
+    private static final int SCRATCH_CODE_LENGTH = 8;
+
+    // 计算碰撞码时的模
+    private static final int SCRATCH_CODE_MODULUS = (int) Math.pow(10, SCRATCH_CODE_LENGTH);
 
     // 初始化密钥随机
     private final TickSecureRandom tickSecureRandom = new TickSecureRandom(RNG_ALGORITHM, RNG_ALGORITHM_PROVIDER);
@@ -109,18 +123,68 @@ public class TickAuthenticator implements ITickAuthenticator {
      */
     @Override
     public TickAuthenticatorKey createCredentials() {
+
         // 分配随机数空间
-        byte[] bytes = new byte[SECRET_BITS_LENGTH];
+        byte[] bytes = new byte[SECRET_BITS_LENGTH / 8];
+
         // 填充随机数
         tickSecureRandom.filledRandomBytes(bytes);
+
         // 生成用户可见的密钥
         String userViewKey = converterSecretKey(bytes);
+
         // 生成用于验证的码
         int validationCode = generateValidateCode(bytes);
+
         // 生成碰撞测试用的码
+        List<Integer> scratchCodes = createScratchList();
 
+        return new TickAuthenticatorKey(config, userViewKey, validationCode, scratchCodes);
+    }
 
-        return null;
+    /**
+     * 生成碰撞测试列表
+     *
+     * @return
+     */
+    private List<Integer> createScratchList() {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < config.getScratchNum(); i++) {
+            list.add(createScratchCode());
+        }
+        return list;
+    }
+
+    /**
+     * 生成碰撞码
+     *
+     * @return
+     */
+    private int createScratchCode() {
+
+        while (true) {
+            byte[] scratchCodeBuffer = new byte[BYTES_PER_SCRATCH_CODE];
+            tickSecureRandom.filledRandomBytes(scratchCodeBuffer);
+
+            if (scratchCodeBuffer.length < BYTES_PER_SCRATCH_CODE) {
+                throw new IllegalArgumentException(
+                        String.format(
+                                "The provided random byte buffer is too small: %d.",
+                                scratchCodeBuffer.length));
+            }
+
+            int scratchCode = 0;
+
+            for (int i = 0; i < BYTES_PER_SCRATCH_CODE; ++i) {
+                scratchCode = (scratchCode << 8) + (scratchCodeBuffer[i] & 0xff);
+            }
+
+            scratchCode = (scratchCode & 0x7FFFFFFF) % SCRATCH_CODE_MODULUS;
+
+            if (scratchCode >= SCRATCH_CODE_MODULUS / 10) {
+                return scratchCode;
+            }
+        }
     }
 
     /**

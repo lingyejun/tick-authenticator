@@ -12,6 +12,7 @@ import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +32,7 @@ public class TickAuthenticatorTest {
 
     private long x = 30;
 
-    private static String hash(String content){
+    private static String hash(String content) {
         StringBuffer hexString = new StringBuffer();
         try {
             MessageDigest md = MessageDigest.getInstance("HmacSHA1");
@@ -51,7 +52,7 @@ public class TickAuthenticatorTest {
     }
 
     @Test
-    public void getDigest(){
+    public void getDigest() {
         byte[] hmacResult = null;
         try {
             // 获取Hmac实例并指定其摘要算法
@@ -139,6 +140,35 @@ public class TickAuthenticatorTest {
         }
 
         printTestResult(key, ta, configBuilder.build().getHmacType(), testTime);
+    }
+
+    @Test
+    public void createCredentials() {
+        AuthenticatorConfigBuilder configBuilder = new AuthenticatorConfigBuilder();
+        configBuilder.setDigit(8).setTimeStepMills(TimeUnit.SECONDS.toMillis(x)).setHmacType(HmacHashFunction.HmacSHA512.getHmacType());
+        TickAuthenticator ta = new TickAuthenticator(configBuilder.build());
+
+        TickAuthenticatorKey authenticatorKey = ta.createCredentials();
+
+        String secretKey = authenticatorKey.getKey();
+
+        int verificationCode = authenticatorKey.getVerificationCode();
+
+        List<Integer> scratchList = authenticatorKey.getScratchList();
+
+        System.out.println("secretKey : " + secretKey);
+
+        System.out.println("verificationCode : " + verificationCode);
+
+        for (Integer scratchCode : scratchList) {
+
+            // 可见次数就碰撞到正确的OTP密码，说明算法有问题
+            if (verificationCode == scratchCode) {
+                throw new IllegalArgumentException("scratch test failed，system bug.");
+            }
+            System.out.println(scratchCode);
+        }
+
     }
 
 

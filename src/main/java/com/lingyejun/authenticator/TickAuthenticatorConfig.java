@@ -15,6 +15,9 @@ public class TickAuthenticatorConfig {
     // OTP长度
     private int digit = 6;
 
+    // 碰撞测试码的个数
+    private int scratchNum = 5;
+
     // 用于取模计算的基数
     private int modDigit = (int) Math.pow(10, digit);
 
@@ -45,6 +48,10 @@ public class TickAuthenticatorConfig {
 
     public String getHmacType() {
         return hmacType;
+    }
+
+    public int getScratchNum() {
+        return scratchNum;
     }
 
     public static class AuthenticatorConfigBuilder {

@@ -38,4 +38,20 @@ public class TickAuthenticatorKey {
         this.verificationCode = verificationCode;
         this.scratchList = scratchList;
     }
+
+    public TickAuthenticatorConfig getConfig() {
+        return config;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public int getVerificationCode() {
+        return verificationCode;
+    }
+
+    public List<Integer> getScratchList() {
+        return scratchList;
+    }
 }
