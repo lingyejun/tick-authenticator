@@ -3,7 +3,7 @@ package com.lingyejun.authenticator;
 import java.math.BigInteger;
 
 /**
- * 工具类
+ * 进制转换工具类
  *
  * @Author: lingyejun
  * @Date: 2019/2/26

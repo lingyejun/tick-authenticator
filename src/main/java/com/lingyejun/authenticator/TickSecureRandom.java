@@ -15,19 +15,29 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TickSecureRandom {
 
-    // 随机算法
+    /**
+     * 随机算法
+     */
     private final String algorithm;
 
-    // 算法提供方
+    /**
+     * 算法提供方
+     */
     private final String provider;
 
-    // 强随机数生成器
+    /**
+     * 强随机数生成器
+     */
     private volatile SecureRandom secureRandom;
 
-    // 原子型Integer,初始化计数起点
+    /**
+     * 原子型Integer,初始化计数起点
+     */
     private final AtomicInteger count = new AtomicInteger(0);
 
-    // 周期动态生成新的随机数生成器(每1000个换一次新的随机)
+    /**
+     * 周期动态生成新的随机数生成器(每1000个换一次新的随机)
+     */
     private static final int DYNAMIC_REBUILD_SECRET = 1_000;
 
     public TickSecureRandom(String algorithm, String provider) {
@@ -80,7 +90,7 @@ public class TickSecureRandom {
     /**
      * 生成随机密钥
      *
-     * @param bytes
+     * @param bytes 待填充的数组
      */
     public void filledRandomBytes(byte[] bytes) {
 

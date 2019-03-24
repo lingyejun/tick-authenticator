@@ -1,6 +1,8 @@
 package com.lingyejun.authenticator;
 
 /**
+ * TickAuthenticator接口
+ *
  * @Author: lingyejun
  * @Date: 2019/2/18
  * @Describe: TickAuthenticator Interface
@@ -11,24 +13,24 @@ public interface ITickAuthenticator {
     /**
      * 生成客户端凭证
      *
-     * @return
+     * @return 密钥对象
      */
     TickAuthenticatorKey createCredentials();
 
     /**
      * 基于客户端当前时间获取TOTP密码
      *
-     * @param secretKey
-     * @return
+     * @param secretKey 密钥
+     * @return 动态totp验证码
      */
     int getTimeBasedPassword(String secretKey);
 
     /**
      * 基于指定时间获取TOTP密码
      *
-     * @param secretKey
-     * @param timestamp
-     * @return
+     * @param secretKey 密钥
+     * @param timestamp 指定时间戳
+     * @return 动态totp验证码
      */
     int getTimeBasedPassword(String secretKey, long timestamp);
 

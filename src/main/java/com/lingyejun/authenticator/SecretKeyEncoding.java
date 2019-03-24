@@ -1,7 +1,7 @@
 package com.lingyejun.authenticator;
 
 /**
- * SecretKey的编码方式
+ * SecretKey的编码方式枚举
  *
  * @Author: lingyejun
  * @Date: 2019/3/18

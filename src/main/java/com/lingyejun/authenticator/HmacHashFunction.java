@@ -1,6 +1,8 @@
 package com.lingyejun.authenticator;
 
 /**
+ * HmacHash枚举
+ *
  * @Author: lingyejun
  * @Date: 2019/2/20
  * @Describe:

@@ -25,46 +25,64 @@ public class TickAuthenticator implements ITickAuthenticator {
 
     private static final Logger LOGGER = Logger.getLogger(TickAuthenticator.class.getName());
 
-    // 密钥随机算法
+    /**
+     * 密钥随机算法
+     */
     @SuppressWarnings("SpellCheckingInspection")
     private static final String RNG_ALGORITHM = "SHA1PRNG";
 
-    // 密钥随机算法的提供方
+    /**
+     * 密钥随机算法的提供方
+     */
     @SuppressWarnings("SpellCheckingInspection")
     private static final String RNG_ALGORITHM_PROVIDER = "SUN";
 
-    // 无效的碰撞码
-    private static final int SCRATCH_CODE_INVALID = -1;
-
-    // 用于计算碰撞码的随机字节长度
+    /**
+     * 用于计算碰撞码的随机字节长度
+     */
     private static final int BYTES_PER_SCRATCH_CODE = 4;
 
-    // 碰撞码长度
+    /**
+     * 碰撞码长度
+     */
     private static final int SCRATCH_CODE_LENGTH = 8;
 
-    // 计算碰撞码时的模
+    /**
+     * 计算碰撞码时的模
+     */
     private static final int SCRATCH_CODE_MODULUS = (int) Math.pow(10, SCRATCH_CODE_LENGTH);
 
-    // 初始化密钥随机
+    /**
+     * 初始化密钥随机
+     */
     private final TickSecureRandom tickSecureRandom = new TickSecureRandom(RNG_ALGORITHM, RNG_ALGORITHM_PROVIDER);
 
-    // 32位int用十六进制表示的最大值
+    /**
+     * 32位int用十六进制表示的最大值
+     */
     private static final int MAX_HEX_INTEGER = 0x7FFFFFFF;
 
-    // 秘钥的二进制长度
+    /**
+     * 秘钥的二进制长度
+     */
     private static final int SECRET_BITS_LENGTH = 80;
 
-    // 配置项类
+    /**
+     * 配置项类
+     */
     private final TickAuthenticatorConfig config;
-
-    public TickAuthenticator() {
-        config = new TickAuthenticatorConfig();
-    }
 
     public TickAuthenticator(TickAuthenticatorConfig config) {
         this.config = config;
     }
 
+    /**
+     * 根据key和time生成验证码
+     *
+     * @param key 字节数组密钥
+     * @param tm 用于计算的当前窗口
+     * @return 验证码
+     */
     public int generateAuthCode(byte[] key, long tm) {
 
         // 为64位long类型创建byte[]
@@ -148,8 +166,8 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 根据时间窗口的步长，获取当前所处的窗口
      *
-     * @param timestamp
-     * @return
+     * @param timestamp 时间戳
+     * @return 当前所在的窗口
      */
     private long getCurrentTimeWindow(long timestamp) {
 
@@ -159,7 +177,7 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 生成客户端凭证
      *
-     * @return
+     * @return 密钥对象
      */
     @Override
     public TickAuthenticatorKey createCredentials() {
@@ -185,8 +203,8 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 基于客户端当前时间获取TOTP密码
      *
-     * @param secretKey
-     * @return
+     * @param secretKey 密钥
+     * @return TOTP密码
      */
     @Override
     public int getTimeBasedPassword(String secretKey) {
@@ -196,9 +214,9 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 基于指定时间获取TOTP密码
      *
-     * @param secretKey
-     * @param timestamp
-     * @return
+     * @param secretKey 密钥
+     * @param timestamp 时间戳
+     * @return TOTP密码
      */
     @Override
     public int getTimeBasedPassword(String secretKey, long timestamp) {
@@ -243,7 +261,7 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 生成碰撞测试列表
      *
-     * @return
+     * @return 碰撞List
      */
     private List<Integer> createScratchList() {
         List<Integer> list = new ArrayList<>();
@@ -256,7 +274,7 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 生成碰撞码
      *
-     * @return
+     * @return 碰撞码
      */
     private int createScratchCode() {
 
@@ -288,8 +306,8 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 生成验证码
      *
-     * @param secretBytes
-     * @return
+     * @param secretBytes 字节数组密钥
+     * @return 验证码
      */
     private int generateValidateCode(byte[] secretBytes) {
         // 基于0时刻
@@ -299,8 +317,8 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 将密钥转换为可见的形式
      *
-     * @param randomBytes
-     * @return
+     * @param randomBytes 随机的字节数组
+     * @return 可见密钥
      */
     private String converterSecretKey(byte[] randomBytes) {
         switch (config.getSecretKeyEncoding()) {
@@ -316,8 +334,8 @@ public class TickAuthenticator implements ITickAuthenticator {
     /**
      * 密钥解码
      *
-     * @param secretKey
-     * @return
+     * @param secretKey 编码后的密钥
+     * @return 解码后密钥
      */
     private byte[] decodeSecret(String secretKey) {
         switch (config.getSecretKeyEncoding()) {

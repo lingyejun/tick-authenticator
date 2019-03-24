@@ -3,7 +3,7 @@ package com.lingyejun.authenticator;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 参数配置
+ * 认证器统一配置
  *
  * @Author: lingyejun
  * @Date: 2019/2/22
@@ -12,25 +12,39 @@ import java.util.concurrent.TimeUnit;
  */
 public class TickAuthenticatorConfig {
 
-    // OTP长度
+    /**
+     * OTP长度
+     */
     private int digit = 6;
 
-    // 碰撞测试码的个数
+    /**
+     * 碰撞测试码的个数
+     */
     private int scratchNum = 5;
 
-    // 用于取模计算的基数
+    /**
+     * 用于取模计算的基数
+     */
     private int modDigit = (int) Math.pow(10, digit);
 
-    // OTP的步长
+    /**
+     * OTP的步长
+     */
     private long timeStepMills = TimeUnit.SECONDS.toMillis(30);
 
-    // 客户端和服务器时间不同步容错的最大窗口
+    /**
+     * 客户端和服务器时间不同步容错的最大窗口
+     */
     private int clockDriftWindow = 3;
 
-    // Hmac的类型
+    /**
+     * Hmac的类型
+     */
     private String hmacType = HmacHashFunction.HmacSHA1.getHmacType();
 
-    // 秘钥的编码方式
+    /**
+     * 秘钥的编码方式
+     */
     private String secretKeyEncoding = SecretKeyEncoding.Base32.toString();
 
     public int getDigit() {

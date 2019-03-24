@@ -1,6 +1,8 @@
 package com.lingyejun.authenticator;
 
 /**
+ * 异常处理对象
+ *
  * @Author: lingyejun
  * @Date: 2019/2/24
  * @Describe: 
