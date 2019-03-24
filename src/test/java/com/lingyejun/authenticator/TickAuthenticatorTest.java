@@ -162,13 +162,27 @@ public class TickAuthenticatorTest {
 
         for (Integer scratchCode : scratchList) {
 
-            // 可见次数就碰撞到正确的OTP密码，说明算法有问题
+            // 可见次数就碰撞到了正确的OTP密码，说明算法有问题
             if (verificationCode == scratchCode) {
                 throw new IllegalArgumentException("scratch test failed，system bug.");
             }
             System.out.println(scratchCode);
         }
 
+    }
+
+    @Test
+    public void authorize() {
+        AuthenticatorConfigBuilder configBuilder = new AuthenticatorConfigBuilder();
+        configBuilder.setDigit(8).setTimeStepMills(TimeUnit.SECONDS.toMillis(x)).setHmacType(HmacHashFunction.HmacSHA512.getHmacType());
+        TickAuthenticator ta = new TickAuthenticator(configBuilder.build());
+
+        String secretKey = ta.createCredentials().getKey();
+        int clientCode = ta.getTimeBasedPassword(secretKey);
+
+        boolean authFlg = ta.authorize(secretKey, clientCode);
+
+        System.out.println("secret key : " + secretKey + " client code : " + clientCode + " authorize result : " + authFlg);
     }
 
 

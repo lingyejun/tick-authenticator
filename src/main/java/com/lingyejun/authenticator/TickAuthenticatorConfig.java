@@ -24,6 +24,9 @@ public class TickAuthenticatorConfig {
     // OTP的步长
     private long timeStepMills = TimeUnit.SECONDS.toMillis(30);
 
+    // 客户端和服务器时间不同步容错的最大窗口
+    private int clockDriftWindow = 3;
+
     // Hmac的类型
     private String hmacType = HmacHashFunction.HmacSHA1.getHmacType();
 
@@ -52,6 +55,10 @@ public class TickAuthenticatorConfig {
 
     public int getScratchNum() {
         return scratchNum;
+    }
+
+    public int getClockDriftWindow() {
+        return clockDriftWindow;
     }
 
     public static class AuthenticatorConfigBuilder {

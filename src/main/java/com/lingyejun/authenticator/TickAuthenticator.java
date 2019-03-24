@@ -1,7 +1,5 @@
 package com.lingyejun.authenticator;
 
-import com.sun.xml.internal.rngom.parse.host.Base;
-
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
@@ -117,6 +115,48 @@ public class TickAuthenticator implements ITickAuthenticator {
     }
 
     /**
+     * 验证一次性密码
+     *
+     * @param secretKey 密钥
+     * @param clientCode 用户输入的一次性密码
+     * @param timestamp 服务器的时间戳
+     * @param driftWindowSize 漂移窗口的大小
+     * @return 验证成功则为true
+     */
+    private boolean authorizeCode(String secretKey, long clientCode, long timestamp, int driftWindowSize) {
+
+        // 密钥解码
+        byte[] bytes = decodeSecret(secretKey);
+
+        // 获取当前的时间窗口
+        final long currentWindow = getCurrentTimeWindow(timestamp);
+
+        // 窗口容错以保证服务端和客户端始终不同步而导致误判
+        for (int i = -((driftWindowSize - 1) / 2); i < (driftWindowSize) / 2; i++) {
+
+            long serverCode = generateAuthCode(bytes, currentWindow + i);
+
+            // 验证成功
+            if (serverCode == clientCode) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 根据时间窗口的步长，获取当前所处的窗口
+     *
+     * @param timestamp
+     * @return
+     */
+    private long getCurrentTimeWindow(long timestamp) {
+
+        return timestamp / config.getTimeStepMills();
+    }
+
+    /**
      * 生成客户端凭证
      *
      * @return
@@ -140,6 +180,64 @@ public class TickAuthenticator implements ITickAuthenticator {
         List<Integer> scratchCodes = createScratchList();
 
         return new TickAuthenticatorKey(config, userViewKey, validationCode, scratchCodes);
+    }
+
+    /**
+     * 基于客户端当前时间获取TOTP密码
+     *
+     * @param secretKey
+     * @return
+     */
+    @Override
+    public int getTimeBasedPassword(String secretKey) {
+        return getTimeBasedPassword(secretKey, System.currentTimeMillis());
+    }
+
+    /**
+     * 基于指定时间获取TOTP密码
+     *
+     * @param secretKey
+     * @param timestamp
+     * @return
+     */
+    @Override
+    public int getTimeBasedPassword(String secretKey, long timestamp) {
+        return generateAuthCode(decodeSecret(secretKey), getCurrentTimeWindow(timestamp));
+    }
+
+    /**
+     * 使用服务器当前时间的时间戳来验证客户端一次性密码是否正确
+     *
+     * @param secret     密钥
+     * @param clientCode 客户端的一次性密码
+     * @return 验证通过则为true
+     */
+    @Override
+    public boolean authorize(String secret, int clientCode) {
+        return authorize(secret, clientCode, System.currentTimeMillis());
+    }
+
+    /**
+     * 验证客户端一次性密码是否正确
+     *
+     * @param secret     密钥
+     * @param clientCode 客户端的一次性密码
+     * @param timestamp  当前时间戳
+     * @return 验证通过则为true
+     */
+    @Override
+    public boolean authorize(String secret, int clientCode, long timestamp) {
+
+        if (secret == null || secret.isEmpty()) {
+            throw new IllegalArgumentException("secret key is not null or empty.");
+        }
+
+        if (clientCode <= 0 || clientCode > config.getModDigit()) {
+            return false;
+        }
+
+
+        return authorizeCode(secret, clientCode, timestamp, config.getClockDriftWindow());
     }
 
     /**
@@ -212,6 +310,23 @@ public class TickAuthenticator implements ITickAuthenticator {
                 return new Base64().encodeToString(randomBytes);
             default:
                 throw new IllegalArgumentException("not support converter encoding type");
+        }
+    }
+
+    /**
+     * 密钥解码
+     *
+     * @param secretKey
+     * @return
+     */
+    private byte[] decodeSecret(String secretKey) {
+        switch (config.getSecretKeyEncoding()) {
+            case "Base32":
+                return new Base32().decode(secretKey.toUpperCase());
+            case "Base64":
+                return new Base64().decode(secretKey.toUpperCase());
+            default:
+                throw new IllegalArgumentException("not support decode type");
         }
     }
 }
