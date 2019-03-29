@@ -163,6 +163,34 @@ public class TickAuthenticator implements ITickAuthenticator {
         return false;
     }
 
+    private AuthorizeModel authAndSynchronize(String secretKey, long clientCode, long timestamp, int driftWindowSize) {
+
+        // 初始化返回对象
+        AuthorizeModel authorizeModel = new AuthorizeModel();
+
+        // 密钥解码
+        byte[] bytes = decodeSecret(secretKey);
+
+        // 获取当前的时间窗口
+        final long currentWindow = getCurrentTimeWindow(timestamp);
+
+        // 窗口容错以保证服务端和客户端始终不同步而导致误判
+        for (int i = -((driftWindowSize - 1) / 2); i < (driftWindowSize) / 2; i++) {
+
+            long serverCode = generateAuthCode(bytes, currentWindow + i);
+
+            // 验证成功
+            if (serverCode == clientCode) {
+                authorizeModel.setSuccess(true);
+                authorizeModel.setDriftWindowNum(i);
+                authorizeModel.setTimeStepMills(config.getTimeStepMills());
+                return authorizeModel;
+            }
+        }
+
+        return authorizeModel;
+    }
+
     /**
      * 根据时间窗口的步长，获取当前所处的窗口
      *
@@ -256,6 +284,30 @@ public class TickAuthenticator implements ITickAuthenticator {
 
 
         return authorizeCode(secret, clientCode, timestamp, config.getClockDriftWindow());
+    }
+
+    /**
+     * 验证者对客户端的一次性密码进行验证,并返回校准窗口
+     *
+     * @param secret     密钥
+     * @param clientCode 客户端的一次性密码
+     * @param timestamp  当前时间戳
+     * @return 返回带有漂移窗口数的结构对象
+     */
+    @Override
+    public AuthorizeModel authAndSynchronize(String secret, int clientCode, long timestamp) {
+        if (secret == null || secret.isEmpty()) {
+            throw new IllegalArgumentException("secret key is not null or empty.");
+        }
+
+        AuthorizeModel authorizeModel = new AuthorizeModel();
+
+        if (clientCode <= 0 || clientCode > config.getModDigit()) {
+            authorizeModel.setSuccess(false);
+            return authorizeModel;
+        }
+
+        return authAndSynchronize(secret, clientCode, timestamp, config.getClockDriftWindow());
     }
 
     /**

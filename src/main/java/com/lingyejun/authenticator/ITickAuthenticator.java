@@ -53,4 +53,15 @@ public interface ITickAuthenticator {
      * @return 验证通过则为true
      */
     boolean authorize(String secret, int clientCode, long timestamp);
+
+
+    /**
+     * 验证者对客户端的一次性密码进行验证,并返回校准窗口
+     *
+     * @param secret 密钥
+     * @param clientCode 客户端的一次性密码
+     * @param timestamp 当前时间戳
+     * @return 返回带有漂移窗口数的结构对象
+     */
+    AuthorizeModel authAndSynchronize(String secret, int clientCode, long timestamp);
 }

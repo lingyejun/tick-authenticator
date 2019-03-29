@@ -185,6 +185,20 @@ public class TickAuthenticatorTest {
         System.out.println("secret key : " + secretKey + " client code : " + clientCode + " authorize result : " + authFlg);
     }
 
+    @Test
+    public void authAndSynchronize() {
+        AuthenticatorConfigBuilder configBuilder = new AuthenticatorConfigBuilder();
+        configBuilder.setDigit(8).setTimeStepMills(TimeUnit.SECONDS.toMillis(x)).setHmacType(HmacHashFunction.HmacSHA512.getHmacType());
+        TickAuthenticator ta = new TickAuthenticator(configBuilder.build());
+
+        String secretKey = ta.createCredentials().getKey();
+        int clientCode = ta.getTimeBasedPassword(secretKey);
+
+        AuthorizeModel authorizeModel = ta.authAndSynchronize(secretKey, clientCode, System.currentTimeMillis());
+
+        System.out.println("secret key : " + secretKey + " client code : " + clientCode + " authorize result : " + authorizeModel.isSuccess() + " drift window : " + authorizeModel.getDriftWindowNum());
+    }
+
 
     private void printTestResult(byte[] key, TickAuthenticator ta, String mode, long[] testTime) {
         String steps = "0";
