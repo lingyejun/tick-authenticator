@@ -1,6 +1,8 @@
 # tick-authenticator
 Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
+![otp-prover](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/otp-prover.png)
+
 # Definition of HMAC
 We define two fixed and different strings ipad and opad as follows (the 'i' and 'o' are mnemonics for inner and outer):
 ipad = the byte 0x36 repeated B times  
