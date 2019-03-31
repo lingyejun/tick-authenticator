@@ -1,7 +1,16 @@
 # tick-authenticator
+
 Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
+生活中我们会经常使用到TOTP的算法应用，如银行的动态口令器、网络游戏中的将军令、登录场景下的手机二次验证等等。
+
+下图便是一个常见的TOTP动态密码生成器：
+
 ![otp-prover](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/otp-prover.png)
+
+为了提高游戏账号的安全性我们在输入账号密码后，对于绑定了将军令的用户还需要输入将军令（OTP动态口令生成器）上面的一次性动态密码，验证通过后方才登陆成功。
+
+![demo-login](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/demo-login.jpeg)
 
 # Definition of HMAC
 We define two fixed and different strings ipad and opad as follows (the 'i' and 'o' are mnemonics for inner and outer):
