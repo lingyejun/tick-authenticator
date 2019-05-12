@@ -12,9 +12,11 @@ Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
 ![demo-login](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/demo-login.jpeg)
 
-# Definition of HMAC
+# TOTP Img Description
 
-![totp-desc](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/totp-desc.png)
+<img src="https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/totp-desc.png" width = 300% height = 300% div align=center/>
+
+# Definition of HMAC
 
 We define two fixed and different strings ipad and opad as follows (the 'i' and 'o' are mnemonics for inner and outer):
 ipad = the byte 0x36 repeated B times  
