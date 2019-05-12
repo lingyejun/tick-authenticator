@@ -14,7 +14,7 @@ Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
 # TOTP Img Description
 
-<img src="https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/totp-desc.png" width = 300% height = 300% div align=center/>
+![totp-easy](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/totp-desc-esay.png)
 
 # Definition of HMAC
 
