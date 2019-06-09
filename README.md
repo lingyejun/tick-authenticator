@@ -12,19 +12,37 @@ Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
 ![demo-login](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/demo-login.jpeg)
 
+# 一次性密钥的生成步骤
+
+RFC4226中定义了生成OTP的关键三个步骤
+
+```
+
+We can describe the operations in 3 distinct steps:
+
+Step 1: Generate an HMAC-SHA-1 value Let HS = HMAC-SHA-1(K,C)  // HS is a 20-byte string
+
+Step 2: Generate a 4-byte string (Dynamic Truncation)
+Let Sbits = DT(HS)   //  DT, defined below,
+                     //  returns a 31-bit string
+
+Step 3: Compute an HOTP value
+Let Snum  = StToNum(Sbits)   // Convert S to a number in 0...2^{31}-1
+Return D = Snum mod 10^Digit //  D is a number in the range 0...10^{Digit}-1
+   
+The Truncate function performs Step 2 and Step 3, i.e., the dynamic truncation and then the reduction modulo 10^Digit.  The purpose of the dynamic offset truncation technique is to extract a 4-byte dynamic binary code from a 160-bit (20-byte) HMAC-SHA-1 result.
+
+DT(String) // String = String[0]...String[19]
+Let OffsetBits be the low-order 4 bits of String[19]
+Offset = StToNum(OffsetBits) // 0 <= OffSet <= 15
+Let P = String[OffSet]...String[OffSet+3]
+Return the Last 31 bits of P
+
+```
+
 # TOTP Img Description
 
 ![totp-easy](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/totp-desc-esay.png)
-
-# Definition of HMAC
-
-We define two fixed and different strings ipad and opad as follows (the 'i' and 'o' are mnemonics for inner and outer):
-ipad = the byte 0x36 repeated B times  
-opad = the byte 0x5C repeated B times.  
-  
-To compute HMAC over the data ‘text' we perform  
-  
-H(K XOR opad, H(K XOR ipad, text))  
 
 # Notations
 
