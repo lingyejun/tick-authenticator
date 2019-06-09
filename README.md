@@ -18,21 +18,20 @@ Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
 * Step 1: Generate an HMAC-SHA-1 value Let HS = HMAC-SHA-1(K,C)  // HS is a 20-byte string
 
-* Step 2: Generate a 4-byte string (Dynamic Truncation)
-Let Sbits = DT(HS)   //  DT, defined below,
-                     //  returns a 31-bit string
+* Step 2: Generate a 4-byte string (Dynamic Truncation)  
+Let Sbits = DT(HS)   //  DT, defined below, returns a 31-bit string  
 
 The Truncate function performs Step 2 and Step 3, i.e., the dynamic truncation and then the reduction modulo 10^Digit.  The purpose of the dynamic offset truncation technique is to extract a 4-byte dynamic binary code from a 160-bit (20-byte) HMAC-SHA-1 result.  
 
-DT(String) // String = String[0]...String[19]
-Let OffsetBits be the low-order 4 bits of String[19]  
+DT(String) // String = String[0]...String[19]  
+Let OffsetBits be the low-order 4 bits of String[19]    
 Offset = StToNum(OffsetBits) // 0 <= OffSet <= 15  
 Let P = String[OffSet]...String[OffSet+3]  
-Return the Last 31 bits of P
+Return the Last 31 bits of P  
 
-* Step 3: Compute an HOTP value
-Let Snum  = StToNum(Sbits)   // Convert S to a number in 0...2^{31}-1
-Return D = Snum mod 10^Digit //  D is a number in the range 0...10^{Digit}-1
+* Step 3: Compute an HOTP value  
+Let Snum  = StToNum(Sbits)   // Convert S to a number in 0...2^{31}-1  
+Return D = Snum mod 10^Digit //  D is a number in the range 0...10^{Digit}-1  
 
 ## RFC6238中关于生成TOTP的描述
 
