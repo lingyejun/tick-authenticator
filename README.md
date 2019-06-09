@@ -21,18 +21,16 @@ Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 * Step 2: Generate a 4-byte string (Dynamic Truncation)
 Let Sbits = DT(HS)   //  DT, defined below,
                      //  returns a 31-bit string
+> The Truncate function performs Step 2 and Step 3, i.e., the dynamic truncation and then the reduction modulo 10^Digit.  The purpose of the dynamic offset truncation technique is to extract a 4-byte dynamic binary code from a 160-bit (20-byte) HMAC-SHA-1 result.  
+DT(String) // String = String[0]...String[19]
+Let OffsetBits be the low-order 4 bits of String[19]  
+Offset = StToNum(OffsetBits) // 0 <= OffSet <= 15  
+Let P = String[OffSet]...String[OffSet+3]  
+Return the Last 31 bits of P
 
 * Step 3: Compute an HOTP value
 Let Snum  = StToNum(Sbits)   // Convert S to a number in 0...2^{31}-1
 Return D = Snum mod 10^Digit //  D is a number in the range 0...10^{Digit}-1
-   
-The Truncate function performs Step 2 and Step 3, i.e., the dynamic truncation and then the reduction modulo 10^Digit.  The purpose of the dynamic offset truncation technique is to extract a 4-byte dynamic binary code from a 160-bit (20-byte) HMAC-SHA-1 result.
-
-DT(String) // String = String[0]...String[19]
-Let OffsetBits be the low-order 4 bits of String[19]
-Offset = StToNum(OffsetBits) // 0 <= OffSet <= 15
-Let P = String[OffSet]...String[OffSet+3]
-Return the Last 31 bits of P
 
 ## RFC6238中关于生成TOTP的描述
 
@@ -47,12 +45,11 @@ Return the Last 31 bits of P
 * T = (Current Unix time - T0) / X, where the default floor function is used in the computation.
 
 
-# TOTP Img Description
+# 实例讲述TOTP的算法流程
 
 ![totp-easy](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/totp-desc-esay.png)
-      
-# Example of TOTP Computation for Digit = 6
-
+    
+## 六位TOTP动态密钥的计算过程
 
 T = (Current Unix time - T0) / X
 
@@ -109,7 +106,7 @@ HmacSHA1(key,value) = [34 112 -98 94 34 -56 0 8 -21 11 35 -73 -18 -111 80 -74 31
 
 5. The MSB of DBC1 is 0x50 so DBC2 = DBC1 = 0x50ef7f19 = 1354112887.
 
-6. HOTP = DBC2 modulo 10^6 = 112887.
+6. TOTP = DBC2 modulo 10^6 = 112887.
 
 	* 1354112887 % 10^6 = 112887	
                    
