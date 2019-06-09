@@ -21,7 +21,9 @@ Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 * Step 2: Generate a 4-byte string (Dynamic Truncation)
 Let Sbits = DT(HS)   //  DT, defined below,
                      //  returns a 31-bit string
-> The Truncate function performs Step 2 and Step 3, i.e., the dynamic truncation and then the reduction modulo 10^Digit.  The purpose of the dynamic offset truncation technique is to extract a 4-byte dynamic binary code from a 160-bit (20-byte) HMAC-SHA-1 result.  
+
+The Truncate function performs Step 2 and Step 3, i.e., the dynamic truncation and then the reduction modulo 10^Digit.  The purpose of the dynamic offset truncation technique is to extract a 4-byte dynamic binary code from a 160-bit (20-byte) HMAC-SHA-1 result.  
+
 DT(String) // String = String[0]...String[19]
 Let OffsetBits be the low-order 4 bits of String[19]  
 Offset = StToNum(OffsetBits) // 0 <= OffSet <= 15  
