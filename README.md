@@ -12,21 +12,17 @@ Time-based One-time Password (TOTP) algorithm specified in RFC 6238.
 
 ![demo-login](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/demo-login.jpeg)
 
-# 一次性密钥的生成步骤
+# TOTP的生成步骤
 
-RFC4226中定义了生成OTP的关键三个步骤
+## RFC4226中定义了生成HOTP的关键三个步骤
 
-```
+* Step 1: Generate an HMAC-SHA-1 value Let HS = HMAC-SHA-1(K,C)  // HS is a 20-byte string
 
-We can describe the operations in 3 distinct steps:
-
-Step 1: Generate an HMAC-SHA-1 value Let HS = HMAC-SHA-1(K,C)  // HS is a 20-byte string
-
-Step 2: Generate a 4-byte string (Dynamic Truncation)
+* Step 2: Generate a 4-byte string (Dynamic Truncation)
 Let Sbits = DT(HS)   //  DT, defined below,
                      //  returns a 31-bit string
 
-Step 3: Compute an HOTP value
+* Step 3: Compute an HOTP value
 Let Snum  = StToNum(Sbits)   // Convert S to a number in 0...2^{31}-1
 Return D = Snum mod 10^Digit //  D is a number in the range 0...10^{Digit}-1
    
@@ -38,29 +34,22 @@ Offset = StToNum(OffsetBits) // 0 <= OffSet <= 15
 Let P = String[OffSet]...String[OffSet+3]
 Return the Last 31 bits of P
 
-```
+## RFC6238中关于生成TOTP的描述
+
+* HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))
+
+* Basically, we define TOTP as TOTP = HOTP(K, T), where T is an integer and represents the number of time steps between the initial counter time T0 and the current Unix time.
+
+* X represents the time step in seconds (default value X = 30 seconds) and is a system parameter.
+      
+* T0 is the Unix time to start counting time steps (default value is 0, i.e., the Unix epoch) and is also a system parameter.
+         
+* T = (Current Unix time - T0) / X, where the default floor function is used in the computation.
+
 
 # TOTP Img Description
 
 ![totp-easy](https://github.com/lingyejun/tick-authenticator/blob/master/doc/ref/img/totp-desc-esay.png)
-
-# Notations
-
-* HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))
-
-* Basically, we define TOTP as TOTP = HOTP(K, T), where T is an integer
-   and represents the number of time steps between the initial counter
-   time T0 and the current Unix time.
-
-* X represents the time step in seconds (default value X =
-      30 seconds) and is a system parameter.
-      
-* T0 is the Unix time to start counting time steps (default value is
-      0, i.e., the Unix epoch) and is also a system parameter.
-      
-      
-* T = (Current Unix time - T0) / X, where the
-   default floor function is used in the computation.
       
 # Example of TOTP Computation for Digit = 6
 
